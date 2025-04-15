@@ -5,6 +5,7 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from core.base_utils import get_bot_token, get_admins_ids, get_google_api_client
 from utils.google_tables import get_worksheet
+from utils.setup import setup_bot_commands
 from handlers import commands, messages
 
 # Настройка логов
@@ -26,6 +27,9 @@ dp = Dispatcher()
 
 # === Запуск бота ===
 async def main():
+    # Настройка кнопки меню
+    await setup_bot_commands(bot)
+
     # Инициализация Google Sheets
     try:
         ws = await get_worksheet()

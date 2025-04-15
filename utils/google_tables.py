@@ -21,7 +21,7 @@ async def get_worksheet():
 
 
 async def add_task(ws, user_id, username, task_name):
-    now = datetime.now().strftime("%d%m-%Y %H:%M:%S")
+    now = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
     await ws.append_row([str(user_id), username, task_name, now, ""])
 
 
@@ -29,7 +29,7 @@ async def add_task(ws, user_id, username, task_name):
 async def finish_last_task(ws, user_id):
     rows = await ws.get_all_values()
 
-    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    now = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
 
     for i in range(len(rows) - 1, 0, -1):
         if len(rows[i]) >= 5 and rows[i][0] == str(user_id) and rows[i][4] == "":
