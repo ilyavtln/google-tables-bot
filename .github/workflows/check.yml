@@ -1,0 +1,14 @@
+name: Ping Server
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ping SSH_HOST
+        run: |
+          echo "Pinging ${{ secrets.SSH_HOST }}..."
+          ping -c 4 ${{ secrets.SSH_HOST }}
