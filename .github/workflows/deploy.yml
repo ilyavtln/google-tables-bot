@@ -9,4 +9,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy via SSH
+      - name: Test
+        run: |
+          echo "Deploy"
+          ping -c 4 ya.ru
