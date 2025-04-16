@@ -1,6 +1,6 @@
 from aiogram import Router, types
 from aiogram.filters import Command
-from aiogram import Bot
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from core.base_utils import get_admins_ids
 from utils.google_tables import finish_last_task, add_task, get_all_tasks
 
@@ -8,7 +8,7 @@ router = Router()
 admins = get_admins_ids()
 
 @router.message(Command("start"))
-async def cmd_start(message: types.Message, bot: Bot):
+async def cmd_start(message: types.Message):
     user_id = message.from_user.id
 
     if user_id in admins:

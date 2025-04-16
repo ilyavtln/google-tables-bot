@@ -6,7 +6,7 @@ from aiogram.enums import ParseMode
 from core.base_utils import get_bot_token, get_admins_ids, get_google_api_client
 from utils.google_tables import get_worksheet
 from utils.setup import setup_bot_commands
-from handlers import commands, messages
+from handlers import commands, messages, callbacks
 
 # Настройка логов
 logging.basicConfig(level=logging.INFO)
@@ -45,6 +45,7 @@ async def main():
 
     dp.include_router(commands.router)
     dp.include_router(messages.router)
+    dp.include_router(callbacks.router)
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)

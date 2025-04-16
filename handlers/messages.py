@@ -1,6 +1,7 @@
-from aiogram import Router, types
+from aiogram import Router
 from aiogram import F
 from aiogram.types import Message
+from keyboards.task_type_keyboard import get_task_type_keyboard
 from utils.google_tables import add_task, finish_last_task
 
 router = Router()
@@ -14,15 +15,17 @@ async def echo_hello(message: Message, worksheet):
 # Обработчик любого текста (кроме команд)
 @router.message(F.text)
 async def handle_task_start(message: Message, worksheet):
-    # Завершаем последнюю задачу перед началом новой
+    # Завершить предыдущую задачу
     await finish_last_task(worksheet, message.from_user.id)
 
-    # Добавляем новую задачу
+    # Добавить новую задачу с пустым типом
     await add_task(
         worksheet,
         user_id=message.from_user.id,
         username=message.from_user.username or message.from_user.full_name,
-        task_name=message.text.strip()
+        task_name=message.text.strip(),
+        task_type=""
     )
 
-    await message.answer("Задача начата!")
+    # Клавиатура с выбором типа
+    await message.answer("Задача начата! Выберите тип задачи (не обязательно):", reply_markup=get_task_type_keyboard())
