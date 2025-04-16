@@ -3,6 +3,7 @@ import logging
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from aiogram.fsm.storage.memory import MemoryStorage
 from core.base_utils import get_bot_token, get_admins_ids, get_google_api_client
 from utils.google_tables import get_worksheet
 from utils.setup import setup_bot_commands
@@ -22,7 +23,7 @@ bot = Bot(
     default=DefaultBotProperties(parse_mode=ParseMode.HTML)
 )
 
-dp = Dispatcher()
+dp = Dispatcher(storage=MemoryStorage())
 
 
 # === Запуск бота ===

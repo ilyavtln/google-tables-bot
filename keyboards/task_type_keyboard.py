@@ -1,7 +1,7 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 def get_task_type_keyboard() -> InlineKeyboardMarkup:
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+    return InlineKeyboardMarkup(inline_keyboard=[
         [
             InlineKeyboardButton(text="Клинические исследования", callback_data="type_Клинические исследования"),
             InlineKeyboardButton(text="Разработка/Регистрация", callback_data="type_Разработка/Регистрация")
@@ -19,4 +19,3 @@ def get_task_type_keyboard() -> InlineKeyboardMarkup:
             InlineKeyboardButton(text="Проведение ТО АФС и ВВ", callback_data="type_Проведение ТО АФС и ВВ")
         ]
     ])
-    return keyboard

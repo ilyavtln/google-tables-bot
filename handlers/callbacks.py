@@ -14,5 +14,5 @@ async def handle_task_type_callback(callback: types.CallbackQuery, worksheet):
         task_type=task_type
     )
 
-    await callback.answer(f"Тип задачи обновлён: {task_type or 'пропущен'}")
-    await callback.message.edit_text(f"Тип задачи обновлён: {task_type or 'пропущен'} ✅")
+    await callback.answer(f"Тип задачи обновлён: {task_type}")
+    await callback.message.edit_text(f"Тип задачи обновлён: {task_type} ✅")
