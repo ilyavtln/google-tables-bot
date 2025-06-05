@@ -28,7 +28,6 @@ async def update_task_after_click():
     pass
 
 
-# === 🔴 Завершить последнюю задачу ===
 async def finish_last_task(ws, user_id):
     rows = await ws.get_all_values()
 
@@ -53,3 +52,45 @@ async def update_task_type_in_sheet(ws, user_id, task_type):
 async def get_all_tasks(ws):
     rows = await ws.get_all_values()
     return rows[1:]
+
+
+async def get_active_tasks(ws):
+    rows = await ws.get_all_values()
+    return [row[1:4] + row[5:] for row in rows[1:] if len(row) > 4 and row[4] == ""]
+
+
+async def get_stats(ws):
+    """Возвращает форматированную строку со статистикой по задачам"""
+    rows = await ws.get_all_values()
+
+    if len(rows) < 2:
+        return ""
+
+    unique_users = set()
+    completed = 0
+    active = 0
+
+    for row in rows[1:]:
+        if len(row) < 6:
+            continue
+
+        user_id = row[0]
+        username = row[1]
+        end_time = row[4]
+
+        unique_users.add(f"{username} (ID: {user_id})")
+
+        if end_time.strip():
+            completed += 1
+        else:
+            active += 1
+
+    total = completed + active
+
+    return (
+        "<b>📊 Статистика задач:</b>\n"
+        f"👥 Уникальные пользователи: {len(unique_users)}\n"
+        f"✅ Выполнено задач: {completed}\n"
+        f"🔄 Активных задач: {active}\n"
+        f"📝 Всего задач: {total}"
+    )
