@@ -65,12 +65,17 @@ async def show_users_task(message: types.Message, worksheet):
             reply_markup=builder.as_markup()
         )
     else:
-        user_tasks = await get_tasks_by_userid(worksheet, message.from_user.id)
-        await message.answer(user_tasks)
+        tasks_messages = await get_tasks_by_userid(worksheet, message.from_user.id)
+
+        if isinstance(tasks_messages, list):
+            for msg in tasks_messages[1:]:
+                await message.answer(msg)
+        else:  # Если одно сообщение
+            await message.answer(tasks_messages)
 
 
 @router.message(Command("admin"))
-async def admin_access(message: types.Message, worksheet):
+async def admin_access(message: types.Message):
     if user_is_admin(message.from_user.id):
         await message.answer("Вы админ")
 
