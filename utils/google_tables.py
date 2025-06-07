@@ -94,3 +94,63 @@ async def get_stats(ws):
         f"🔄 Активных задач: {active}\n"
         f"📝 Всего задач: {total}"
     )
+
+
+async def get_tasks_by_userid(ws, user_id):
+    rows = await ws.get_all_values()
+    user_tasks = []
+
+    for row in rows[1:]:  # пропускаем заголовок
+        if row and row[0] == str(user_id):  # проверяем ID пользователя
+            user_tasks.append(row)
+
+    if not user_tasks:
+        return "У вас пока нет задач."
+
+    formatted_tasks = []
+    for i, task in enumerate(user_tasks, 1):
+        status = "🔴 Активна" if len(task) < 5 or task[4] == "" else "✅ Завершена"
+        task_type = task[5] if task[5] else "не указан"
+        end_time = task[4] if len(task) > 4 and task[4] else "ещё не завершена"
+
+        formatted_task = (
+            f"{i}. <b>{task[2]}</b>\n"
+            f"   🕒 Начата: {task[3]}\n"
+            f"   🕓 Завершена: {end_time}\n"
+            f"   🏷 Тип: {task_type}\n"
+            f"   📌 Статус: {status}"
+        )
+        formatted_tasks.append(formatted_task)
+
+    username = await get_username_by_id(ws, user_id) or f"User #{user_id}"
+    header = f"📋 <b>Задачи пользователя @{username} ({len(user_tasks)}):</b>\n\n"
+
+    return header + "\n\n".join(formatted_tasks)
+
+
+async def get_unique_users(worksheet):
+    rows = await worksheet.get_all_values()
+    unique_users = {}
+
+    for row in rows[1:]:  # Пропускаем заголовок
+        if not row or len(row) < 2:  # Пропускаем пустые/неполные строки
+            continue
+
+        user_id = row[0].strip()  # ID пользователя (первая колонка)
+        username = (row[1].strip() if len(row) > 1 and row[1].strip() else f"User #{user_id}")
+
+        if user_id and user_id not in unique_users:
+            unique_users[user_id] = username
+
+    return unique_users
+
+
+async def get_username_by_id(ws, user_id: str):
+    rows = await ws.get_all_values()
+
+    for row in rows[1:]:  # пропускаем заголовок
+        if row and row[0] == str(user_id):  # проверяем ID пользователя
+            return row[1] if len(row) > 1 and row[1] else ""  # возвращаем username (вторая колонка)
+
+    return ""  # если пользователь не найден
+

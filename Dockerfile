@@ -2,7 +2,7 @@
 FROM python:3.9-slim
 
 # Устанавливаем метаданные
-LABEL authors="ilyaavtln"
+LABEL authors="ilyavtln"
 LABEL description="Telegram Bot"
 
 # Создаем рабочую директорию

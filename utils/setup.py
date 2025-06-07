@@ -11,7 +11,8 @@ async def setup_bot_commands(bot: Bot, user_id: int = None):
         BotCommand(command='/start', description='Запустить бота'),
         BotCommand(command='/new', description='Начать задачу'),
         BotCommand(command='/end', description='Завершить задачу'),
-        BotCommand(command='/help', description='Помощь')
+        BotCommand(command='/help', description='Помощь'),
+        BotCommand(command='/tasks', description='Задачи пользователя'),
     ]
 
     # Команды только для админов
