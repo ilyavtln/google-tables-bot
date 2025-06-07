@@ -20,13 +20,12 @@ async def handle_task_type_callback(callback: types.CallbackQuery, worksheet):
 
 @router.callback_query(F.data.startswith("user_"))
 async def handle_user_selection(callback: types.CallbackQuery, worksheet):
-    # Извлекаем user_id из callback_data
     user_id = callback.data.replace("user_", "")
+    tasks_messages = await get_tasks_by_userid(worksheet, user_id)
 
-    # Получаем задачи выбранного пользователя
-    tasks = await get_tasks_by_userid(worksheet, user_id)
-
-    await callback.message.edit_text(
-        text=tasks,
-        reply_markup=None  # Убираем клавиатуру после выбора
-    )
+    if isinstance(tasks_messages, list):  # Если сообщение разбито на части
+        await callback.message.edit_text(tasks_messages[0])
+        for msg in tasks_messages[1:]:
+            await callback.message.answer(msg)
+    else:  # Если одно сообщение
+        await callback.message.edit_text(tasks_messages)

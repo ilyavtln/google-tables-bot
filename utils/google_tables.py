@@ -104,28 +104,36 @@ async def get_tasks_by_userid(ws, user_id):
         if row and row[0] == str(user_id):  # проверяем ID пользователя
             user_tasks.append(row)
 
-    if not user_tasks:
-        return "У вас пока нет задач."
+    username = await get_username_by_id(ws, user_id) or f"User #{user_id}"
+    header = f"📋 <b>Задачи пользователя @{username} ({len(user_tasks)}):</b>\n\n"
 
-    formatted_tasks = []
+    messages = [header]  # Начинаем с заголовка
+    current_message = ""
+
     for i, task in enumerate(user_tasks, 1):
         status = "🔴 Активна" if len(task) < 5 or task[4] == "" else "✅ Завершена"
         task_type = task[5] if task[5] else "не указан"
         end_time = task[4] if len(task) > 4 and task[4] else "ещё не завершена"
 
-        formatted_task = (
-            f"{i}. <b>{task[2]}</b>\n"
+        task_text = (
+            f"<b>Задача {i}</b>.\n"
+            f"   💻 {task[2]}\n"
             f"   🕒 Начата: {task[3]}\n"
             f"   🕓 Завершена: {end_time}\n"
             f"   🏷 Тип: {task_type}\n"
-            f"   📌 Статус: {status}"
+            f"   📌 Статус: {status}\n\n"
         )
-        formatted_tasks.append(formatted_task)
 
-    username = await get_username_by_id(ws, user_id) or f"User #{user_id}"
-    header = f"📋 <b>Задачи пользователя @{username} ({len(user_tasks)}):</b>\n\n"
+        if len(current_message) + len(task_text) > 4000:
+            messages.append(current_message)
+            current_message = task_text
+        else:
+            current_message += task_text
 
-    return header + "\n\n".join(formatted_tasks)
+    if current_message:
+        messages.append(current_message)
+
+    return messages
 
 
 async def get_unique_users(worksheet):
